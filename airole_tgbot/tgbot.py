@@ -33,15 +33,6 @@ class Basic:
 
         self.client.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, self.echo))
 
-
-    async def handle_message(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        user_message = update.message.text
-        chat_id = update.effective_chat.id
-        await context.bot.send_message(chat_id=chat_id, text=f"你輸入的回答是：{user_message}")
-        # 在這裡可以對user_message進行處理，例如儲存到資料庫，或是進行邏輯判斷。
-
-        print(f'{self.client} Basic 初始化完成')
-
     async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         sender = {
             "id": update.effective_user.id,
@@ -70,7 +61,7 @@ class Basic:
                 # 使用 Gemini API 生成回應
                 chat = g_client.chats.create(model="gemini-2.0-flash", history=[])
                 # 構建提示
-                chat.send_message(f"你現在扮演{character['name']}，一個{character['type']}。{character['description']}。個性:{character}", )
+                chat.send_message(f"你現在扮演{character['name']}，一個{character['type']}。{character['description']}。個性:{character}。回答請加入 emojis 來修飾。")
                 resp = chat.send_message(f"請自我介紹")
                 context.user_data['chat'] = chat
 
@@ -85,8 +76,6 @@ class Basic:
             await update.message.reply_text(resp.text)
         else:
             await update.message.reply_text("Use /start to see the list of available characters.")
-
-
 
 
 async def main():
